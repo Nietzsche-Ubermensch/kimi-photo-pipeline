@@ -43,11 +43,13 @@ async def list_tools() -> list[types.Tool]:
                     },
                     "location": {"type": "string", "default": "Bradenton, FL"},
                     "radius": {
-                        "type": "integer", "default": 5000,
+                        "type": "integer",
+                        "default": 5000,
                         "description": "Metres, max 20000",
                     },
                     "force": {
-                        "type": "boolean", "default": False,
+                        "type": "boolean",
+                        "default": False,
                         "description": "Force rebuild even if index is fresh",
                     },
                 },
@@ -69,8 +71,7 @@ async def list_tools() -> list[types.Tool]:
         types.Tool(
             name="brave_local_status",
             description=(
-                "Return current RAG index health: "
-                "POI count, creation time, and TTL remaining."
+                "Return current RAG index health: POI count, creation time, and TTL remaining."
             ),
             inputSchema={"type": "object", "properties": {}},
         ),
