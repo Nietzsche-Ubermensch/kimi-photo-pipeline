@@ -40,12 +40,11 @@ mcp_servers:
         enabled: true
 
 # ── Model routing ─────────────────────────────────────────────────────────
-# kimi-coding reads credentials from ~/.kimi/ (set by `kimi auth login`)
-# or falls back to MOONSHOT_API_KEY env var. No OPENROUTER_API_KEY needed.
-# api_mode is auto-detected as anthropic_messages for api.kimi.com/coding.
+# Uses OPENROUTER_API_KEY repo secret (already configured).
+# Kimi K2 via OpenRouter — no kimi-cli OAuth needed.
 model:
-  provider: kimi-coding
-  default: kimi-k2-5
+  provider: openrouter
+  default: moonshotai/kimi-k2.6
 
 fallback_model: anthropic/claude-sonnet-4.6
 
