@@ -46,7 +46,7 @@ def _brave_headers() -> dict[str, str]:
 # Stage 1 — Fetch
 # ---------------------------------------------------------------------------
 
-async def place_search(
+async def place_search(  # pylint: disable=too-many-arguments,too-many-positional-arguments
     query: str,
     lat: Optional[float] = None,
     lng: Optional[float] = None,
@@ -142,7 +142,7 @@ def build_poi_document(place: dict, detail: dict, description: str) -> str:
     ).strip()
 
 
-async def build_local_rag_index(
+async def build_local_rag_index(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals
     query: str,
     lat: Optional[float] = None,
     lng: Optional[float] = None,
@@ -157,12 +157,15 @@ async def build_local_rag_index(
 
     # Smart TTL: skip rebuild if index is < 6 hours old
     if not force and store_path.exists():
-        existing = json.loads(store_path.read_text())
+        existing = json.loads(store_path.read_text(encoding="utf-8"))
         created  = existing.get("metadata", {}).get("created", "")
         if created:
             age = datetime.now() - datetime.fromisoformat(created)
             if age < timedelta(hours=6):
-                logger.info("Index fresh (%.1f h old), skipping rebuild.", age.total_seconds() / 3600)
+                logger.info(
+                    "Index fresh (%.1f h old), skipping rebuild.",
+                    age.total_seconds() / 3600,
+                )
                 return existing
 
     places = await place_search(query, lat=lat, lng=lng, location=location, radius=radius)
@@ -222,7 +225,7 @@ async def build_local_rag_index(
         "docs":    docs,
         "vectors": vectors,
     }
-    store_path.write_text(json.dumps(index, indent=2))
+    store_path.write_text(json.dumps(index, indent=2), encoding="utf-8")
     logger.info("Indexed %d valid POIs → %s", len(docs), store_path)
     return index
 
@@ -255,7 +258,7 @@ async def retrieve_local(
             f"RAG index not found: {store_path}. Run build_local_rag_index() first."
         )
 
-    index   = json.loads(store_path.read_text())
+    index   = json.loads(store_path.read_text(encoding="utf-8"))
     vectors = index["vectors"]
     meta    = index["meta"]
     docs    = index["docs"]
