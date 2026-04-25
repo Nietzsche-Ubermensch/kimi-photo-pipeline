@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+kimi_photo_pipeline.egg-info/PKG-INFO
+kimi_photo_pipeline.egg-info/SOURCES.txt
+kimi_photo_pipeline.egg-info/dependency_links.txt
+kimi_photo_pipeline.egg-info/requires.txt
+kimi_photo_pipeline.egg-info/top_level.txt
+sdk/__init__.py
+sdk/embeddings.py
+sdk/local_rag.py
+sdk/mcp_server.py

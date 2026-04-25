@@ -1,0 +1,9 @@
+httpx>=0.27
+numpy>=1.26
+requests>=2.31
+mcp>=1.0
+
+[dev]
+pylint
+pytest
+pytest-asyncio
