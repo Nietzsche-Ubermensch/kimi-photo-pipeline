@@ -142,7 +142,8 @@ def build_poi_document(place: dict, detail: dict, description: str) -> str:
     ).strip()
 
 
-async def build_local_rag_index(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals
+# pylint: disable-next=too-many-arguments,too-many-positional-arguments,too-many-locals
+async def build_local_rag_index(
     query: str,
     lat: Optional[float] = None,
     lng: Optional[float] = None,
