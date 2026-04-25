@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import asyncio
 import json
-from pathlib import Path
 
 from mcp import types
 from mcp.server import Server
@@ -38,10 +37,21 @@ async def list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "query":    {"type": "string", "description": "Place search term, e.g. 'photo studio'"},
+                    "query": {
+                        "type": "string",
+                        "description": "Place search term, e.g. 'photo studio'",
+                    },
                     "location": {"type": "string", "default": "Bradenton, FL"},
-                    "radius":   {"type": "integer", "default": 5000, "description": "Metres, max 20000"},
-                    "force":    {"type": "boolean", "default": False, "description": "Force rebuild even if index is fresh"},
+                    "radius": {
+                        "type": "integer",
+                        "default": 5000,
+                        "description": "Metres, max 20000",
+                    },
+                    "force": {
+                        "type": "boolean",
+                        "default": False,
+                        "description": "Force rebuild even if index is fresh",
+                    },
                 },
                 "required": ["query"],
             },
@@ -60,7 +70,9 @@ async def list_tools() -> list[types.Tool]:
         ),
         types.Tool(
             name="brave_local_status",
-            description="Return current RAG index health: POI count, creation time, and TTL remaining.",
+            description=(
+                "Return current RAG index health: POI count, creation time, and TTL remaining."
+            ),
             inputSchema={"type": "object", "properties": {}},
         ),
     ]
@@ -92,8 +104,11 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
 
     if name == "brave_local_status":
         if not DEFAULT_STORE.exists():
-            return [types.TextContent(type="text", text="No index found. Call brave_local_index first.")]
-        data = json.loads(DEFAULT_STORE.read_text())
+            return [types.TextContent(
+                type="text",
+                text="No index found. Call brave_local_index first.",
+            )]
+        data = json.loads(DEFAULT_STORE.read_text(encoding="utf-8"))
         meta = data.get("metadata", {})
         return [types.TextContent(
             type="text",
