@@ -163,10 +163,8 @@ async def build_local_rag_index(
         if created:
             age = datetime.now() - datetime.fromisoformat(created)
             if age < timedelta(hours=6):
-                logger.info(
-                    "Index fresh (%.1f h old), skipping rebuild.",
-                    age.total_seconds() / 3600,
-                )
+                age_hours = age.total_seconds() / 3600
+                logger.info("Index fresh (%.1f h old), skipping rebuild.", age_hours)
                 return existing
 
     places = await place_search(query, lat=lat, lng=lng, location=location, radius=radius)
