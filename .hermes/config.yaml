@@ -1,0 +1,50 @@
+# Hermes Agent Configuration
+# Wires Brave Search + Brave Local RAG as MCP tools
+# Deploy via: spawn hermes digitalocean
+
+mcp_servers:
+
+  # ── Official Brave Search MCP (web + local quick-lookup) ─────────────────
+  brave-search:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-brave-search"]
+    env:
+      BRAVE_API_KEY: "${BRAVE_API_KEY}"
+    timeout: 30
+    connect_timeout: 10
+    enabled: true
+    tools:
+      brave_web_search:
+        enabled: true
+      brave_local_search:
+        enabled: true
+
+  # ── Custom Brave Local RAG MCP (semantic POI retrieval) ──────────────────
+  brave-rag:
+    command: python3
+    args: ["/root/pipeline/sdk/mcp_server.py"]
+    env:
+      BRAVE_API_KEY: "${BRAVE_API_KEY}"
+      VENICE_API_KEY: "${VENICE_API_KEY}"
+      NVIDIA_API_KEY: "${NVIDIA_API_KEY}"
+      HF_TOKEN: "${HF_TOKEN}"
+    timeout: 60
+    connect_timeout: 15
+    enabled: true
+    tools:
+      brave_local_index:
+        enabled: true
+      brave_local_retrieve:
+        enabled: true
+      brave_local_status:
+        enabled: true
+
+# ── Model routing ─────────────────────────────────────────────────────────
+default_model: moonshotai/kimi-k2.6
+fallback_model: anthropic/claude-sonnet-4.6
+
+# ── Agent behaviour ───────────────────────────────────────────────────────
+agent:
+  max_steps: 500
+  allow_background_tasks: true
+  task_timeout_seconds: 900
