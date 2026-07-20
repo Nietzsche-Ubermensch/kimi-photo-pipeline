@@ -1,50 +1,31 @@
-# Agent Instructions — kimi-photo-pipeline
+# AGENTS.md
 
-## Role
-You are a photo-listing agent. For every item to be listed:
-1. Build or verify the Brave Local RAG index for the user's location.
-2. Generate a product photo using Venice image generation.
-3. Attach nearby buyer / shop context from the RAG index to the listing JSON.
+## Project Overview
+This repository is managed by Blackbox CLI v2 with Hermes Agent orchestration.
 
-## Tool Usage
+## Build & Test
+- Detect the project stack automatically (Node.js, Python, Go, etc.)
+- Run the appropriate build/test commands before committing changes
+- Use `npm run build` / `npm test` for Node.js projects
+- Use `pytest` / `python -m pytest` for Python projects
 
-### Step 0 — Refresh local context
-Before processing any batch, call:
-```
-brave_local_index(query="<product category> buyers OR shops", location="Bradenton, FL", radius=5000)
-```
-Skip if `brave_local_status` reports an index < 6 hours old.
+## Code Style
+- Follow existing conventions in the codebase
+- No mock data — all tests use real API calls and real services
+- Commit messages: `type: concise description` (types: fix, feat, refactor, docs, chore)
 
-### Step 1 — Generate photo
-Call `photo_gen.generate(prompt, strategy="flux-2-pro")` with a detailed prompt.
-For location-aware prompts, first call:
-```
-brave_local_retrieve(query="<item style> studio OR setting", top_k=3)
-```
-and inject the top-3 POI descriptions as scene context.
+## MCP Servers
+- GitHub MCP is configured globally at ~/.blackbox/mcp.json
+- Use GitHub MCP tools for issue triage, PR creation, branch management
 
-### Step 2 — Build listing JSON
-```json
-{
-  "title": "...",
-  "description": "...",
-  "photo_path": "...",
-  "nearby_buyers": [
-    {"name": "...", "address": "...", "url": "..."}
-  ]
-}
-```
+## Model
+- Primary: z-ai/glm-5.2 (78.1% Terminal Bench 2.1, 424.6 t/s)
+- Always pass `-m z-ai/glm-5.2` explicitly
 
-## Search Tool Priority
-| Task | Tool |
-|---|---|
-| Quick web fact | `brave_web_search` |
-| Quick nearby place lookup | `brave_local_search` |
-| Semantic POI retrieval for prompts | `brave_local_retrieve` |
-| Refresh stale index | `brave_local_index` |
-
-## Rules
-- Never skip the RAG index check on a new location.
-- Always use `strategy_for("rag_poi")` (resolves to `venice`) for POI embeddings.
-- Use `strategy_for("retrieval_hq")` (resolves to `nv-llama`) for high-precision title matching.
-- Do not expose API keys in listings or logs.
+## Workflow
+1. Read the issue/requirements
+2. Understand the codebase structure
+3. Implement the fix/feature
+4. Run tests (real, not mocks)
+5. Commit with descriptive message
+6. Push and create PR referencing the issue
